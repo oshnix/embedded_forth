@@ -1,11 +1,10 @@
-#include "memalloc.h"
+#include "../include/memalloc.h"
 #include <malloc.h>
-//typedef long int word
-#define KiloByte 0x100 //0x100 * word = 1kB
+
+#define KiloByte 0x100 /*0x100 * word = 1kB*/
 /*
 При реализации последующих функций вместо malloc будут использоваться абсолютные адреса ячеек памяти 
 */
-
 
 word* stack_mem(){
 	return malloc(sizeof(word)*KiloByte);

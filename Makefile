@@ -1,14 +1,22 @@
-COMP=gcc
+CC=gcc
+IDIR=./include
+CFLAGS= -ansi -pedantic -Wall -I$(IDIR)
+BDIR=./build
+LIBS= -lm
+LDK = -o
+CDK= -c
 TARGET=main
-CFLAGS= -ansi -pedantic -Wall -Werror -m32
-MFLAGS= -m32
-CK= -c -m32
-LDK= -o
-FILES= main.c memalloc.c
-OFILES= main.o memalloc.o
+SRC=$(wildcard src/*.c)
+OBJ=$(patsubst src/%.c, build/%.o , $(SRC))
+FILES = main.c
 
-main: main.c
-	$(COMP) $(CK) $(FILES)
-	$(COMP) $(LDK) $(TARGET) $(CFLAGS) $(OFILES) 
-clean: 
-	rm -f $(TARGET) $(OFILES)
+mainmake: $(OBJ)
+	$(CC) $(LDK) $(TARGET) $(OBJ)
+
+build/%.o: src/%.c 
+	$(CC) $(CDK) $(LDK) $@ $< $(CFLAGS)
+
+
+#clean:
+#	rm -rf $(TARGET)
+
