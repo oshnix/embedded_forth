@@ -37,6 +37,14 @@
 
 /* USER CODE END Includes */
 
+
+/* Global variables ----------------------------------------------------------*/
+uint32_t *next_xt;
+uint32_t *word;
+uint32_t *stack_data;
+uint32_t *stack_return;
+uint32_t *stack_variables;
+
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
 
@@ -45,7 +53,38 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
+
 /* USER CODE END PV */
+
+
+/* USER CODE BEGIN DEFINES */
+/* Private defines -----------------------------------------------------------*/
+
+/*WORD SPACE
+*word structure: 
+**4 bytes - next word adrress
+**7 bytes - word name
+**1 byte - flags
+**4 bytes - execution token adress
+*/
+#define DATA_WORDS_BEGIN                ((uint32_t)0x20028000)
+#define DATA_WORDS_END                  ((uint32_t)0x2002BFFF)
+
+/*DATA STACK*/
+#define STACK_DATA_BEGIN                ((uint32_t)0x2002C000)
+#define STACK_DATA_END                  ((uint32_t)0x2002CFFF)
+
+/*RETURN STACK*/
+#define STACK_RETURN_BEGIN              ((uint32_t)0x2002D000)
+#define STACK_RETURN_END                ((uint32_t)0x2002DFFF)
+
+/*USER VARIABLES SPACE*/
+#define DATA_VARIABLES_BEGIN            ((uint32_t)0x2002E000)
+#deifne DATA_VARIABLES_END              ((uint32_t)0x2002F7FF)
+
+
+/* USER CODE END TYPEDEF */
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -84,13 +123,15 @@ int main(void)
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
-
+     
+    
   /* USER CODE END 2 */
-
+  
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  while (1){
+    
+    
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

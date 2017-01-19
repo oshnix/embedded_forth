@@ -14,7 +14,7 @@
       </Debug-Log>
       <Workspace>
         <ColumnWidths>
-          <Column0>235</Column0>
+          <Column0>476</Column0>
           <Column1>5</Column1>
           <Column2>27</Column2>
           <Column3>0</Column3>
@@ -26,6 +26,8 @@
         <ColumnWidth2>224</ColumnWidth2>
         <ColumnWidth3>56</ColumnWidth3>
       </Build>
+      <TerminalIO/>
+      <Tool-Output/>
     </Static>
     <Windows>
       <Wnd0>
@@ -62,6 +64,12 @@
             <Factory>Build</Factory>
             <Session/>
           </Tab>
+          <Tab>
+            <Identity>TabID-10299-24490</Identity>
+            <TabName>Tool Output</TabName>
+            <Factory>Tool-Output</Factory>
+            <Session/>
+          </Tab>
         </Tabs>
         <SelectedTab>1</SelectedTab>
       </Wnd1>
@@ -70,17 +78,53 @@
       <Pane>
         <Tab>
           <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>0</YPos2>
+          <SelStart2>7263</SelStart2>
+          <SelEnd2>7263</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
           <Filename>$WS_DIR$\..\src\main.c</Filename>
           <XPos>0</XPos>
           <YPos>0</YPos>
           <SelStart>0</SelStart>
           <SelEnd>0</SelEnd>
           <XPos2>0</XPos2>
-          <YPos2>28</YPos2>
-          <SelStart2>2059</SelStart2>
-          <SelEnd2>2059</SelEnd2>
+          <YPos2>83</YPos2>
+          <SelStart2>3671</SelStart2>
+          <SelEnd2>3671</SelEnd2>
         </Tab>
-        <ActiveTab>0</ActiveTab>
+        <ActiveTab>1</ActiveTab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>450</YPos2>
+          <SelStart2>0</SelStart2>
+          <SelEnd2>0</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\..\Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f429xx.s</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>185</YPos2>
+          <SelStart2>11101</SelStart2>
+          <SelEnd2>11101</SelEnd2>
+        </Tab>
       </Pane>
       <ActivePane>0</ActivePane>
       <Sizes>
@@ -100,6 +144,9 @@
             </Toolbar-0342DF40>
           </Sizes>
         </Row0>
+        <Row1>
+          <Sizes/>
+        </Row1>
       </Top>
       <Left>
         <Row0>
@@ -108,16 +155,16 @@
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
-                <Bottom>738</Bottom>
-                <Right>287</Right>
+                <Bottom>751</Bottom>
+                <Right>528</Right>
                 <x>-2</x>
                 <y>-2</y>
-                <xscreen>200</xscreen>
-                <yscreen>200</yscreen>
-                <sizeHorzCX>169205</sizeHorzCX>
-                <sizeHorzCY>203874</sizeHorzCY>
-                <sizeVertCX>244501</sizeVertCX>
-                <sizeVertCY>754332</sizeVertCY>
+                <xscreen>325</xscreen>
+                <yscreen>203</yscreen>
+                <sizeHorzCX>169271</sizeHorzCX>
+                <sizeHorzCY>203611</sizeHorzCY>
+                <sizeVertCX>276042</sizeVertCX>
+                <sizeVertCY>755266</sizeVertCY>
               </Rect>
             </Wnd0>
           </Sizes>
@@ -135,16 +182,16 @@
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
-                <Bottom>198</Bottom>
-                <Right>1184</Right>
+                <Bottom>201</Bottom>
+                <Right>1922</Right>
                 <x>-2</x>
                 <y>-2</y>
-                <xscreen>1186</xscreen>
-                <yscreen>200</yscreen>
-                <sizeHorzCX>1003384</sizeHorzCX>
-                <sizeHorzCY>203874</sizeHorzCY>
-                <sizeVertCX>169205</sizeVertCX>
-                <sizeVertCY>203874</sizeVertCY>
+                <xscreen>1924</xscreen>
+                <yscreen>203</yscreen>
+                <sizeHorzCX>1002083</sizeHorzCX>
+                <sizeHorzCY>203611</sizeHorzCY>
+                <sizeVertCX>169271</sizeVertCX>
+                <sizeVertCY>203611</sizeVertCY>
               </Rect>
             </Wnd1>
           </Sizes>
