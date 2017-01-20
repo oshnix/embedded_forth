@@ -34,14 +34,17 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
+    
+#include "main.h"
+#include "dictionary.h"
 
 /* USER CODE END Includes */
 
 
 /* Global variables ----------------------------------------------------------*/
 uint32_t *next_xt;
-uint32_t *word;
-uint32_t *stack_data;
+uint32_t *w;
+int32_t *stack_data;
 uint32_t *stack_return;
 uint32_t *stack_variables;
 
@@ -66,21 +69,36 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 **7 bytes - word name
 **1 byte - flags
 **4 bytes - execution token adress
+*size - 16 KB total
 */
-#define DATA_WORDS_BEGIN                ((uint32_t)0x20028000)
-#define DATA_WORDS_END                  ((uint32_t)0x2002BFFF)
+#define DATA_WORDS_BEGIN                ((uint32_t*)0x20028000)
+#define DATA_WORDS_END                  ((uint32_t*)0x2002BFFF)
+#define PREV DATA_WORDS_BEGIN
+/*DATA STACK
+*stack - up to 1024 elements, 4B each
+*values - signed numbers of int32_t type
+*size - 4KB total.
+*/
+#define STACK_DATA_BEGIN                ((int32_t*)0x2002C000)
+#define STACK_DATA_END                  ((int32_t*)0x2002CFFF)
 
-/*DATA STACK*/
-#define STACK_DATA_BEGIN                ((uint32_t)0x2002C000)
-#define STACK_DATA_END                  ((uint32_t)0x2002CFFF)
+/*RETURN STACK
+*return stack - the same as data stack
+*but consists of unsigned numbers.
+*size - 4KB total.
+*/
+#define STACK_RETURN_BEGIN              ((uint32_t*)0x2002D000)
+#define STACK_RETURN_END                ((uint32_t*)0x2002DFFF)
 
-/*RETURN STACK*/
-#define STACK_RETURN_BEGIN              ((uint32_t)0x2002D000)
-#define STACK_RETURN_END                ((uint32_t)0x2002DFFF)
-
-/*USER VARIABLES SPACE*/
+/*USER VARIABLES SPACE
+*variable structure:
+**4 byte - next variable adress
+**4 byte - variable name
+**4 byte - variable 
+*size - 6KB total.
+*/
 #define DATA_VARIABLES_BEGIN            ((uint32_t)0x2002E000)
-#deifne DATA_VARIABLES_END              ((uint32_t)0x2002F7FF)
+#define DATA_VARIABLES_END              ((uint32_t)0x2002F7FF)
 
 
 /* USER CODE END TYPEDEF */
@@ -92,6 +110,7 @@ void Error_Handler(void);
 static void MX_GPIO_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ADC1_Init(void);
+uint8_t input_parser(char *buffer, int32_t *retval);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -102,8 +121,7 @@ static void MX_ADC1_Init(void);
 
 /* USER CODE END 0 */
 
-int main(void)
-{
+int main(void){
 
   /* USER CODE BEGIN 1 */
 
@@ -123,15 +141,29 @@ int main(void)
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
-     
+    stack_data = STACK_DATA_BEGIN;
+    char *buffer = (char*)(0x2002F000);
     
   /* USER CODE END 2 */
   
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1){
-    
-    
+    scanf("%s", buffer);
+    printf("Buffer: %s\r\n",buffer);
+    int32_t res;
+    switch(input_parser(buffer, &res)){
+    case 0:
+      break;
+    case 1:
+      put(res);
+      break;
+      
+    default: 
+      printf("Wrong input\r\n");
+      break;
+     
+    }
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -140,6 +172,49 @@ int main(void)
   /* USER CODE END 3 */
 
 }
+
+/* USER FUNCTIONS BEGIN*/
+
+/**
+*@brief:        gets input word and trying to parse it
+*@param:        char *buffer - zero terminated string to parse
+                uint32_t *retval - variable for pointer or number
+*@retval:       -1 in case of mistake in word.
+                0 if this is a word
+                1 if this is a simple number
+                2 if this is a variable and we need to pop it's value
+                3 if this is a variable and we need to push it value
+*/
+uint8_t input_parser(char *buffer, int32_t *retval){
+  if('-' == *buffer || ('0' <=  *buffer && '9' >= *buffer)){
+    int8_t multiply = 1;
+    if('-' == *buffer){
+      multiply = -1;
+      ++buffer;
+    }
+    *retval = 0;
+    while(*buffer && '0' <= *buffer && '9' >= *buffer){
+      *retval = (*retval * 10) + ((*buffer) - '0');
+      ++buffer;
+    }
+    if(*buffer){
+      return -1;
+   }
+   *retval *= multiply;
+    return 1;
+  
+  } else if('a' <= buffer[0] && 'z' >= buffer[0]){
+    
+  } else if('$' == buffer[0]){
+    
+  } else if('?' == buffer[0]){
+    
+  }
+  return -1;
+}
+
+
+/* USER FUNCTIONS END*/
 
 /** System Clock Configuration
 */
