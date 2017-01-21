@@ -11,6 +11,10 @@ struct word_description{
 };
 
 extern struct word_description *last_word;
+extern void(**current_word)(void);
+void lit(void);
+void creater_sudo();
+extern void (**next_xt_space)(void);
 //extern void *next_xt_space;
 uint8_t strcmp(char *first, char* second);
 void put(int32_t new_number);

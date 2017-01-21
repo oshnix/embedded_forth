@@ -45,8 +45,12 @@
 uint32_t *next_xt;
 uint32_t *w;
 int32_t *stack_data = STACK_DATA_BEGIN -1;
-uint32_t *stack_return;
+uint32_t *stack_return = STACK_RETURN_BEGIN -1;
 uint32_t *stack_variables;
+
+char *buffer = (char*)(0x2002F000);
+char mode = 0;
+int32_t current_data;
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
@@ -97,34 +101,44 @@ int main(void){
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
-    char *buffer = (char*)(0x2002F000);
-    char mode = 0;
+  creater_sudo();
   /* USER CODE END 2 */
   
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1){
+    scanf("%s", buffer);
     if(0 == mode){
-      scanf("%s", buffer);
-      int32_t result;
-      switch(input_parser(buffer, &result)){
+      switch(input_parser(buffer, &current_data)){
       case 0:
-        if(((struct word_description*)result)->num_used >= (stack_data - STACK_DATA_BEGIN)/sizeof(int32_t)){
-          ((void(**)(void))(((struct word_description*)result)->xt))[0]();
+        if(((struct word_description*)current_data)->num_used >= (stack_data - STACK_DATA_BEGIN)/sizeof(int32_t)){
+            current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
+            (*current_word)();
         } else {
           printf("Not enough data on stack. Execution failed\r\n");
         }
         break;
       case 1:
-        put(result);
+        put(current_data);
         break;
       default: 
         printf("Wrong input\r\n");
         break;
       }
     } else {
-      
-      
+      switch(input_parser(buffer, &current_data)){
+        case 0:
+          *(next_xt_space++) = ((void(**)(void))(((struct word_description*)current_data)->xt))[0];
+          last_word->num_used += ((struct word_description*)current_data)->num_used;
+          break;
+        case 1:
+          *(next_xt_space++) = lit;
+          --(last_word->num_used);
+          *(next_xt_space++) = (void(*)(void))current_data;
+          break;
+      default:
+        break;
+      }
     }
   /* USER CODE END WHILE */
   }
@@ -165,8 +179,6 @@ uint8_t input_parser(char *buffer, int32_t *retval){
     
   } else if('?' == buffer[0]){
     
-  } else if(':' == buffer[0]){
-  
   } else{
     struct word_description *current_word = last_word;
     while(current_word != 0 && !(strcmp(buffer, current_word->name))){
