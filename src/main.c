@@ -44,7 +44,7 @@
 /* Global variables ----------------------------------------------------------*/
 uint32_t *next_xt;
 uint32_t *w;
-int32_t *stack_data;
+int32_t *stack_data = STACK_DATA_BEGIN -1;
 uint32_t *stack_return;
 uint32_t *stack_variables;
 
@@ -56,12 +56,12 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
-
 /* USER CODE END PV */
 
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+uint8_t is_num(char char_to_check);
 void Error_Handler(void);
 static void MX_GPIO_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
@@ -97,38 +97,37 @@ int main(void){
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
-    stack_data = STACK_DATA_BEGIN -1; //stack initialized empty.
     char *buffer = (char*)(0x2002F000);
-    
+    char mode = 0;
   /* USER CODE END 2 */
   
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1){
-    scanf("%s", buffer);
-    int32_t res;
-    switch(input_parser(buffer, &res)){
-    case 0:
-      ((void(*)(void))(res))();
-      break;
-    case 1:
-      put(res);
-      break;
+    if(0 == mode){
+      scanf("%s", buffer);
+      int32_t result;
+      switch(input_parser(buffer, &result)){
+      case 0:
+        if(((struct word_description*)result)->num_used >= (stack_data - STACK_DATA_BEGIN)/sizeof(int32_t)){
+          ((void(**)(void))(((struct word_description*)result)->xt))[0]();
+        } else {
+          printf("Not enough data on stack. Execution failed\r\n");
+        }
+        break;
+      case 1:
+        put(result);
+        break;
+      default: 
+        printf("Wrong input\r\n");
+        break;
+      }
+    } else {
       
-    default: 
-      printf("Wrong input\r\n");
-      break;
-     
+      
     }
-    //print_all();
   /* USER CODE END WHILE */
-
   }
-  /* USER CODE BEGIN 3 */
-  
-  
-  /* USER CODE END 3 */
-
 }
 
 /* USER FUNCTIONS BEGIN*/
@@ -144,8 +143,8 @@ int main(void){
                 3 if this is a variable and we need to push it value
 */
 uint8_t input_parser(char *buffer, int32_t *retval){
-  //uint8_t len = strlen(buffer);
-  if('-' == *buffer || ('0' <=  *buffer && '9' >= *buffer)){
+  uint16_t len = strlen(buffer);
+  if(('-' == *buffer && is_num(*(buffer+1))) || is_num(*buffer)){
     int8_t multiply = 1;
     if('-' == *buffer){
       multiply = -1;
@@ -166,6 +165,8 @@ uint8_t input_parser(char *buffer, int32_t *retval){
     
   } else if('?' == buffer[0]){
     
+  } else if(':' == buffer[0]){
+  
   } else{
     struct word_description *current_word = last_word;
     while(current_word != 0 && !(strcmp(buffer, current_word->name))){
@@ -174,12 +175,15 @@ uint8_t input_parser(char *buffer, int32_t *retval){
     if(!current_word){
       return -1;
     }
-    *retval = (int32_t)current_word->xt;
+    *retval = (int32_t)current_word;
     return 0;
   }
   return -1;
 }
 
+uint8_t is_num(char char_to_check){
+  return ('0' <= char_to_check && '9' >= char_to_check);
+}
 
 /* USER FUNCTIONS END*/
 

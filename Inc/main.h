@@ -7,6 +7,8 @@ extern uint32_t *w;
 extern int32_t  *stack_data;
 extern uint32_t *stack_return;
 extern uint32_t *stack_variables;
+extern char mode;
+extern char *buffer;
 
 
 /* Public defines ------------------------------------------------------------*/
@@ -22,7 +24,7 @@ extern uint32_t *stack_variables;
 */
 #define DATA_WORDS_BEGIN                ((uint32_t*)0x20028000)
 #define DATA_WORDS_END                  ((uint32_t*)0x2002BFFF)
-#define PREV DATA_WORDS_BEGIN
+
 /*DATA STACK
 *stack - up to 1024 elements, 4B each
 *values - signed numbers of int32_t type
@@ -49,6 +51,8 @@ extern uint32_t *stack_variables;
 #define DATA_VARIABLES_BEGIN            ((uint32_t)0x2002E000)
 #define DATA_VARIABLES_END              ((uint32_t)0x2002F7FF)
 
+
+#define WORD_MAX_LEN                    5    
 
 /* USER CODE END DEFINES */
 
