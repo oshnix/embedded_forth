@@ -13,6 +13,7 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 struct word_description *next_word_space = (struct word_description*)DATA_WORDS_BEGIN;
+
 void (**next_xt_space)(void);
 char end_docol = 1;
 void(**current_word)(void);
@@ -20,7 +21,10 @@ void(***current_xt)(void);
 /* USER CODE END PV */
 
 void docol(void);
+void end_adding(void);
+void word_end();
 
+void(*word_ending[1])() = {word_end};
 
 void add(void){
   --stack_data;
@@ -51,12 +55,18 @@ void new_word(void){
   }
   next_word_space->previous = last_word;
   last_word = next_word_space;
-  strcpy(last_word->name, buffer);
+  strcpy(buffer, last_word->name);
   last_word->flag = 0;
   last_word->num_used = 0;
   last_word->xt[0] = docol;
   mode = 1;
   next_xt_space = (last_word->xt) + 1;
+}
+
+void end_adding(void){
+  mode = 0;
+  *(next_xt_space++) = (void(*)(void))(word_ending);
+  next_word_space = (struct word_description*)next_xt_space;
 }
 
 void print_all(void){
@@ -77,8 +87,7 @@ void docol(void){
     ++current_xt;
   }
   end_docol = 1;
-  current_word = (void(**)(void))*(stack_return--);
-  
+  current_xt = (void(***)(void))(*(stack_return--));
 }
 
 void word_end(){
@@ -98,6 +107,15 @@ uint8_t strcmp(char *first, char* second){
     ++second;
   }
   return *first == *second ? 1 : 0;
+}
+
+/**
+*@brief:        return max of two signed values
+*@param:        int32_t a, b - two numbers to compare
+*@retval:       a if a greater or equal b, else return b.
+*/
+int32_t max(int32_t a, int32_t b){
+  return a >= b ? a : b;
 }
 
 
@@ -128,7 +146,7 @@ void strcpy(char *src, char* dest){
   while(*(dest++) = *(src++));
 }
 
-#define EMBEDDED_WORD_COUNT 7
+#define EMBEDDED_WORD_COUNT 8
 
 struct word_description words[EMBEDDED_WORD_COUNT] = {
   {0, "+", 0, 2, add},
@@ -137,26 +155,9 @@ struct word_description words[EMBEDDED_WORD_COUNT] = {
   {&words[2], "*", 0, 2, mul},
   {&words[3], "/", 0, 2, div},
   {&words[4], ":", 0, 0 ,new_word},
-  {&words[5], ";", 'i', 0 ,word_end}
+  {&words[5], ";", 'i', 0 ,end_adding},
+  {&words[6], "", 0, 0 , word_end}
 };
 
-void(*word_docol[1])(void) = {docol};
-
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
-
-
-void creater_sudo(){
-  next_word_space->previous = last_word;
-  last_word = next_word_space;
-  next_word_space = (struct word_description*)((uint8_t*)(last_word) + sizeof(struct word_description) + 2 * sizeof(uint32_t*));
-  strcpy("plus", last_word->name);
-  last_word->flag = 0;
-  last_word->num_used = 2;
-  last_word->xt[0] = docol;
-  *(1+last_word->xt) = (void(*)(void))words[0].xt;
-  *(2+last_word->xt) = (void(*)(void))words[6].xt;
-  
-}
-
-
 /* USER CODE END 0 */

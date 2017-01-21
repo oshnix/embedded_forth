@@ -6,7 +6,7 @@ extern uint32_t *next_xt;
 extern int32_t  *stack_data;
 extern uint32_t *stack_return;
 extern uint32_t *stack_variables;
-extern char mode;
+extern uint8_t mode;
 extern char *buffer;
 extern int32_t current_data;
 

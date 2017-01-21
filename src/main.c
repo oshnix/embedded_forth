@@ -49,7 +49,7 @@ uint32_t *stack_return = STACK_RETURN_BEGIN -1;
 uint32_t *stack_variables;
 
 char *buffer = (char*)(0x2002F000);
-char mode = 0;
+uint8_t mode = 0;
 int32_t current_data;
 
 /* Private variables ---------------------------------------------------------*/
@@ -101,7 +101,6 @@ int main(void){
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
-  creater_sudo();
   /* USER CODE END 2 */
   
   /* Infinite loop */
@@ -111,7 +110,7 @@ int main(void){
     if(0 == mode){
       switch(input_parser(buffer, &current_data)){
       case 0:
-        if(((struct word_description*)current_data)->num_used >= (stack_data - STACK_DATA_BEGIN)/sizeof(int32_t)){
+        if(((struct word_description*)current_data)->num_used <= (stack_data - (STACK_DATA_BEGIN-1))){
             current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
             (*current_word)();
         } else {
@@ -128,8 +127,17 @@ int main(void){
     } else {
       switch(input_parser(buffer, &current_data)){
         case 0:
-          *(next_xt_space++) = ((void(**)(void))(((struct word_description*)current_data)->xt))[0];
-          last_word->num_used += ((struct word_description*)current_data)->num_used;
+          if(((struct word_description*)current_data)->flag != 'i'){
+            *(next_xt_space++) = ((void(*)(void))(((struct word_description*)current_data)->xt));
+            if(last_word->num_used == 0){
+              last_word->num_used += ((struct word_description*)current_data)->num_used;
+            } else {
+              last_word->num_used += max(((struct word_description*)current_data)->num_used -1, 0);
+            }
+          } else {
+            current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
+            (*current_word)();
+          }
           break;
         case 1:
           *(next_xt_space++) = lit;

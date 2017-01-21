@@ -1,0 +1,8 @@
+: dec 1 - ;
+: count swap dup rot dup rot + ;
+: write mem 8 - ! ;
+: read mem 8 - @ ;
+: fib inc 1 2 rot dec dec write read 0 > branch0 4 count read branch -12 ;
+
+: test . branch -2 ;
+: test dec .S branch -4 ;
