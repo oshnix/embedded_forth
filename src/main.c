@@ -65,16 +65,14 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-uint8_t is_num(char char_to_check);
 void Error_Handler(void);
 static void MX_GPIO_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ADC1_Init(void);
-uint8_t input_parser(char *buffer, int32_t *retval);
 
 /* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
-
+uint8_t is_num(char char_to_check);
+uint8_t input_parser(char *buffer, int32_t *retval);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -107,6 +105,7 @@ int main(void){
   /* USER CODE BEGIN WHILE */
   while (1){
     scanf("%s", buffer);
+    lowercase(buffer);
     if(0 == mode){
       switch(input_parser(buffer, &current_data)){
       case 0:

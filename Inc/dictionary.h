@@ -15,6 +15,7 @@ extern void(**current_word)(void);
 void lit(void);
 int32_t max(int32_t a, int32_t b);
 void creater_sudo();
+void lowercase(char *src);
 extern void (**next_xt_space)(void);
 uint8_t strcmp(char *first, char* second);
 void put(int32_t new_number);
