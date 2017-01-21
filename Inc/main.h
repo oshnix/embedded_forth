@@ -48,8 +48,14 @@ extern int32_t current_data;
 **4 byte - variable 
 *size - 6KB total.
 */
-#define DATA_VARIABLES_BEGIN            ((uint32_t)0x2002E000)
-#define DATA_VARIABLES_END              ((uint32_t)0x2002F7FF)
+#define DATA_VARIABLES_BEGIN            ((uint32_t*)0x2002E000)
+#define DATA_VARIABLES_END              ((uint32_t*)0x2002F7FF)
+
+#define STRING_BUFFER_BEGIN             ((char*)0x2002F800)
+#define STRING_BUFFER_END               ((char*)0x2002FBFF)
+
+#define USER_MEM_BEGIN                  ((int32_t*)0x2002FC00)
+#define USER_MEM_END                    ((int32_t*)0x2002FFFF)
 
 
 #define WORD_MAX_LEN                    5    

@@ -105,10 +105,13 @@ int main(void){
   /* USER CODE BEGIN WHILE */
   while (1){
     scanf("%s", buffer);
-    lowercase(buffer);
     if(0 == mode){
       switch(input_parser(buffer, &current_data)){
       case 0:
+        if(((struct word_description*)current_data)->flag == 'n'){
+          printf("Wrong input\r\n");
+          break;
+        }
         if(((struct word_description*)current_data)->num_used <= (stack_data - (STACK_DATA_BEGIN-1))){
             current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
             (*current_word)();

@@ -171,10 +171,53 @@ void print_and_drop(){
   drop();
 }
 
+void equal(void){
+  ++stack_data;
+  *stack_data = (*(stack_data - 1) == *(stack_data -2));
+}
+
+void greater(void){
+  ++stack_data;
+  *stack_data = (*(stack_data - 2) > *(stack_data - 1));
+}
+
+void swap(void){
+  int32_t tmp = *stack_data;
+  *stack_data = *(stack_data - 1);
+  *(stack_data - 1) = tmp;
+}
+
+void rotate(void){
+  int32_t tmp = *(stack_data - 1);
+  *(stack_data - 1) = *stack_data;
+  *stack_data = *(stack_data -2);
+  *(stack_data -2) = tmp;
+}
+
+void and(void){
+  --stack_data;
+  *stack_data &= *(stack_data + 1);
+}
+
+void not(void){
+  *stack_data = *stack_data ? 0 : 1;
+}
+
+/*Not added in dictionary ----------------------------------------------------*/
+
+void jump(void){
+  int32_t len = (int32_t)*(++current_word);
+  current_word += len;
+}
+
+void cond_jump(void){
+  if(!*stack_data) jump();
+}
+
 /* USER CODE END EW*/ 
 
 /* Embeded words storage -----------------------------------------------------*/ 
-#define EMBEDDED_WORD_COUNT 10
+#define EMBEDDED_WORD_COUNT 18
 struct word_description words[EMBEDDED_WORD_COUNT] = {
   {0, "+", 0, 2, add},
   {&words[0], "-", 0, 2, sub},
@@ -186,6 +229,14 @@ struct word_description words[EMBEDDED_WORD_COUNT] = {
   {&words[6], "dup", 0, 1 ,dup},
   {&words[7], "drop", 0, 1 ,drop},
   {&words[8], ".", 0, 1 ,print_and_drop},
+  {&words[9], "=", 0, 2 , equal},
+  {&words[10], ">", 0, 2 ,greater},
+  {&words[11], "swap", 0, 2 ,swap},
+  {&words[12], "and", 0, 2 ,and},
+  {&words[13], "not", 0, 1 ,not},
+  {&words[14], "rot", 0, 3 ,rotate},
+  {&words[15], "br", 'n', 0 ,jump},
+  {&words[16], "br0", 'n', 0 ,cond_jump},
 };
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
 
