@@ -213,17 +213,41 @@ void cond_jump(void){
   else ++current_xt;
 }
 
-/*Not added in dictionary ----------------------------------------------------*/
-
 void less(void){
   ++stack_data;
   *stack_data = (*(stack_data - 2) < *(stack_data - 1));
 }
 
+void mem(void){
+  *(++stack_data) = (int32_t)USER_MEM_BEGIN;
+}
+         
+void read(void){
+  if(*stack_data >= (int32_t)USER_MEM_BEGIN && *stack_data <= (int32_t)USER_MEM_END - sizeof(int32_t*) + 1){
+    *(stack_data) = *((int32_t*)(*stack_data));
+  } else {
+    printf("Wrong memory access\r\n");
+  }
+}
+
+void write(void){
+  if(*stack_data >= (int32_t)USER_MEM_BEGIN && *stack_data <= (int32_t)USER_MEM_END - sizeof(int32_t*) + 1){
+    --stack_data;
+    *((int32_t*)(*(stack_data + 1))) = *(stack_data);
+    --stack_data;
+  } else {
+    printf("Wrong memory access\r\n");
+  }
+}
+
+/*Not added in dictionary ----------------------------------------------------*/
+
+
+
 /* USER CODE END EW*/ 
 
 /* Embeded words storage -----------------------------------------------------*/ 
-#define EMBEDDED_WORD_COUNT 19
+#define EMBEDDED_WORD_COUNT 22
 struct word_description words[EMBEDDED_WORD_COUNT] = {
   {0, "+", 0, add},
   {&words[0], "-", 0, sub},
@@ -244,6 +268,9 @@ struct word_description words[EMBEDDED_WORD_COUNT] = {
   {&words[15], "br", 'r', jump},
   {&words[16], "br0", 'r', cond_jump},
   {&words[17], "<", 0, less},
+  {&words[18], "mem", 0, mem},
+  {&words[19], "read", 0, read},
+  {&words[20], "write", 0, write},
 };
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
 

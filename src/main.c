@@ -145,6 +145,7 @@ int main(void){
           ++next_xt_space;
           break;
       default:
+        printf("Wrong input\r\n");
         break;
       }
     }
