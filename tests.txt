@@ -6,3 +6,12 @@
 
 : test . branch -2 ;
 : test dec .S branch -4 ;
+
+: go br 1 + + ;
+1 2 3 4 .s go
+
+: del br0 1 / ; 3 4 0 .s del .s . 2 .s del .s
+
+: sqrt 0 swap dup 0branch 12 drop swap inc dup dup * rot dup rot > branch -14 drop drop ;
+
+4 sqrt 

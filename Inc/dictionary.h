@@ -4,12 +4,16 @@
 
 struct word_description{
   struct word_description *previous;
-  char name[6];
+  char name[7];
   char flag;
-  uint8_t num_used;
   void(*xt[1])();
 };
 
+
+
+extern void(*word_lit[1])(void);
+  
+/* Public functions prototypes -----------------------------------------------*/
 extern struct word_description *last_word;
 extern void(**current_word)(void);
 void lit(void);

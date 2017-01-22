@@ -28,6 +28,7 @@ char end_docol = 1;
 void(**current_word)(void);
 void(***current_xt)(void);
 void(*word_ending[1])() = {word_end};
+void(*word_lit[1])(void) ={lit};
 /* USER CODE END PV */
 
 
@@ -83,7 +84,7 @@ void word_end(){
   end_docol = 0;
 }
 void lit(void){
-    put((int32_t)(++current_word));
+    put((int32_t)(*(++current_xt)));
 }
 void put(int32_t new_number){
   *(++stack_data) = new_number;
@@ -133,7 +134,6 @@ void new_word(void){
   last_word = next_word_space;
   strcpy(buffer, last_word->name);
   last_word->flag = 0;
-  last_word->num_used = 0;
   last_word->xt[0] = docol;
   mode = 1;
   next_xt_space = (last_word->xt) + 1;
@@ -203,40 +203,43 @@ void not(void){
   *stack_data = *stack_data ? 0 : 1;
 }
 
-/*Not added in dictionary ----------------------------------------------------*/
-
 void jump(void){
-  int32_t len = (int32_t)*(++current_word);
-  current_word += len;
+  int32_t len = (int32_t)*(++current_xt);
+  current_xt += len;
 }
 
 void cond_jump(void){
   if(!*stack_data) jump();
+  else ++current_xt;
 }
+
+/*Not added in dictionary ----------------------------------------------------*/
+
+
 
 /* USER CODE END EW*/ 
 
 /* Embeded words storage -----------------------------------------------------*/ 
 #define EMBEDDED_WORD_COUNT 18
 struct word_description words[EMBEDDED_WORD_COUNT] = {
-  {0, "+", 0, 2, add},
-  {&words[0], "-", 0, 2, sub},
-  {&words[1], ".s", 0, 0, print_all},
-  {&words[2], "*", 0, 2, mul},
-  {&words[3], "/", 0, 2, div},
-  {&words[4], ":", 0, 0 ,new_word},
-  {&words[5], ";", 'i', 0 ,end_adding},
-  {&words[6], "dup", 0, 1 ,dup},
-  {&words[7], "drop", 0, 1 ,drop},
-  {&words[8], ".", 0, 1 ,print_and_drop},
-  {&words[9], "=", 0, 2 , equal},
-  {&words[10], ">", 0, 2 ,greater},
-  {&words[11], "swap", 0, 2 ,swap},
-  {&words[12], "and", 0, 2 ,and},
-  {&words[13], "not", 0, 1 ,not},
-  {&words[14], "rot", 0, 3 ,rotate},
-  {&words[15], "br", 'n', 0 ,jump},
-  {&words[16], "br0", 'n', 0 ,cond_jump},
+  {0, "+", 0, add},
+  {&words[0], "-", 0, sub},
+  {&words[1], ".s", 0, print_all},
+  {&words[2], "*", 0, mul},
+  {&words[3], "/", 0, div},
+  {&words[4], ":", 0, new_word},
+  {&words[5], ";", 'i', end_adding},
+  {&words[6], "dup", 0, dup},
+  {&words[7], "drop", 0, drop},
+  {&words[8], ".", 0, print_and_drop},
+  {&words[9], "=", 0, equal},
+  {&words[10], ">", 0, greater},
+  {&words[11], "swap", 0, swap},
+  {&words[12], "and", 0, and},
+  {&words[13], "not", 0, not},
+  {&words[14], "rot", 0, rotate},
+  {&words[15], "br", 'r', jump},
+  {&words[16], "br0", 'r', cond_jump},
 };
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
 

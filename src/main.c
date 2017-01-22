@@ -108,17 +108,13 @@ int main(void){
     if(0 == mode){
       switch(input_parser(buffer, &current_data)){
       case 0:
-        if(((struct word_description*)current_data)->flag == 'n'){
+        if(((struct word_description*)current_data)->flag == 'r'){
           printf("Wrong input\r\n");
           break;
         }
-        if(((struct word_description*)current_data)->num_used <= (stack_data - (STACK_DATA_BEGIN-1))){
-            current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
-            (*current_word)();
-        } else {
-          printf("Not enough data on stack. Execution failed\r\n");
-        }
-        break;
+          current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
+          (*current_word)();
+          break;
       case 1:
         put(current_data);
         break;
@@ -129,22 +125,23 @@ int main(void){
     } else {
       switch(input_parser(buffer, &current_data)){
         case 0:
-          if(((struct word_description*)current_data)->flag != 'i'){
+          if(((struct word_description*)current_data)->flag == 'r'){
             *(next_xt_space++) = ((void(*)(void))(((struct word_description*)current_data)->xt));
-            if(last_word->num_used == 0){
-              last_word->num_used += ((struct word_description*)current_data)->num_used;
-            } else {
-              last_word->num_used += max(((struct word_description*)current_data)->num_used -1, 0);
+            scanf("%s", buffer);
+            if(input_parser(buffer, &current_data) == 1){
+               *(next_xt_space++) = (void(*)(void))current_data;
             }
+          } else if(((struct word_description*)current_data)->flag != 'i'){
+            *(next_xt_space++) = ((void(*)(void))(((struct word_description*)current_data)->xt));
           } else {
             current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
             (*current_word)();
           }
           break;
         case 1:
-          *(next_xt_space++) = lit;
-          --(last_word->num_used);
-          *(next_xt_space++) = (void(*)(void))current_data;
+          *(next_xt_space++) = ((void(*)(void))word_lit);
+          *((int32_t *)(next_xt_space)) = current_data;
+          ++next_xt_space;
           break;
       default:
         break;
