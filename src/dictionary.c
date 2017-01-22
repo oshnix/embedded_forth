@@ -122,7 +122,6 @@ void flag_check(void){
 
 void param_add(void){
   *next_xt_space = (void(*)())(*(stack_data--));
-  --stack_data;
   ++next_xt_space;
 }
 
@@ -372,38 +371,61 @@ struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
     ROT_XT,
     /*if mode == 1, continue, else - goto interpretator*/
     COND_BRANCH_XT,
-    (void(**)()) 28,
+    (void(**)()) 47,
       DROP_XT,
       FIND_XT,
       /*if input isn't word - goto, else - continue*/
       COND_BRANCH_XT,
-      (void(**)())16,
+      (void(**)())32,
         FLAG_CHECK_XT,
         LIT_XT,
+        /*If flag == i, goto immediate execution*/
         (void(**)())'i',
         MINUS_XT,
         COND_BRANCH_XT,
-          (void(**)())4,
+          (void(**)())21,
+        DROP_XT,
+        FLAG_CHECK_XT,
+        LIT_XT,
+        /*If flag == r, read number from buffer and put it in word*/
+        (void(**)())'r',
+        MINUS_XT,
+        COND_BRANCH_XT,
+          (void(**)())5,
         DROP_XT,
         PARAM_ADD_XT,
+        DROP_XT,
         BRANCH_XT,
-        (void(**)()) -19,
+        (void(**)()) -27,
+      /*Part for r flag*/
+      DROP_XT,
+      PARAM_ADD_XT,
+      READ_XT,
+      DROP_XT,
+      IS_NUM_XT,
+      DROP_XT,
+      PARAM_ADD_XT,
+      BRANCH_XT,
+      (void(**)()) -36,
+      /*Part for i flag*/
       DROP_XT,
       EXEC_XT,
       (void(**)())0,
       BRANCH_XT,
-      (void(**)()) -24,
+      (void(**)()) -41,
       /*input isn't word*/
+      DROP_XT,
       IS_NUM_XT,
       /*if not num - go to mistake output*/
       COND_BRANCH_XT,
       (void(**)()) 22,
+        DROP_XT,
         LIT_XT,
         LIT_XT,
         PARAM_ADD_XT,
         PARAM_ADD_XT,
         BRANCH_XT,
-        (void(**)()) -33,
+        (void(**)()) -52,
     /*If mode == 0, we are in interpretator*/
     DROP_XT,
     FIND_XT,
@@ -412,16 +434,16 @@ struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
       EXEC_XT,
       (void(**)())0,
       BRANCH_XT,
-      (void(**)()) -41,
+      (void(**)()) -60,
     DROP_XT,
     IS_NUM_XT,
     COND_BRANCH_XT,
     (void(**)())3,
       DROP_XT,
       BRANCH_XT,
-      (void(**)()) -48,
+      (void(**)()) -67,
     DROP_XT,
     BRANCH_XT,
-    (void(**)()) -51,
+    (void(**)()) -70,
   };
 /* USER CODE END 0 */

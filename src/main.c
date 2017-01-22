@@ -104,64 +104,7 @@ int main(void){
   current_xt = interpretator_loop;
   mode = 0;
   next();
-  
-  
-  
   /* USER CODE END 2 */
-  
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  /*
-  while (1){
-    scanf("%s", buffer);
-    lowercase(buffer);
-    if(0 == mode){
-      switch(input_parser(buffer, &current_data)){
-      case 0:
-        if(((struct word_description*)current_data)->flag == 'r'){
-          printf("Wrong input\r\n");
-          break;
-        }
-          current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
-          (*current_word)();
-          break;
-      case 1:
-        put(current_data);
-        break;
-      default: 
-        printf("Wrong input\r\n");
-        break;
-      }
-    } else {
-      switch(input_parser(buffer, &current_data)){
-        case 0:
-          if(((struct word_description*)current_data)->flag == 'r'){
-            *(next_xt_space++) = ((void(*)(void))(((struct word_description*)current_data)->xt));
-            scanf("%s", buffer);
-            if(input_parser(buffer, &current_data) == 1){
-               *(next_xt_space++) = (void(*)(void))current_data;
-            }
-          } else if(((struct word_description*)current_data)->flag != 'i'){
-            *(next_xt_space++) = ((void(*)(void))(((struct word_description*)current_data)->xt));
-          } else {
-            current_word = (void(**)(void))(((struct word_description*)current_data)->xt);
-            (*current_word)();
-          }
-          break;
-        case 1:
-          *(next_xt_space++) = ((void(*)(void))word_lit_xt);
-          *((int32_t *)(next_xt_space)) = current_data;
-          ++next_xt_space;
-          break;
-      default:
-        printf("Wrong input\r\n");
-        break;
-      }
-    }
-  
-  }
-  */
-  /* USER CODE END WHILE */
 }
 
 /* USER FUNCTIONS BEGIN*/
@@ -174,61 +117,6 @@ void next(void){
   }
 }
 
-
-/**
-*@brief:        gets input word and trying to parse it
-*@param:        char *buffer - zero terminated string to parse
-                uint32_t *retval - variable for pointer or number
-*@retval:       -1 in case of mistake in word.
-                0 if this is a word
-                1 if this is a simple number
-                2 if this is a variable and we need to pop it's value
-                3 if this is a variable and we need to push it value
-*/
-
-/*
-uint8_t input_parser(char *buffer, int32_t *retval){
-  uint16_t len = strlen(buffer);
-  if(('-' == *buffer && is_num(*(buffer+1))) || is_num(*buffer)){
-    int8_t multiply = 1;
-    if('-' == *buffer){
-      multiply = -1;
-      ++buffer;
-    }
-    *retval = 0;
-    while(*buffer && '0' <= *buffer && '9' >= *buffer){
-      *retval = (*retval * 10) + ((*buffer) - '0');
-      ++buffer;
-    }
-    if(*buffer){
-      return -1;
-   }
-   *retval *= multiply;
-    return 1;
-  
-  } else if('$' == buffer[0]){
-    
-  } else if('?' == buffer[0]){
-    
-  } else{
-    struct word_description *current_word = last_word;
-    while(current_word != 0 && !(strcmp(buffer, current_word->name))){
-      current_word = current_word->previous;
-    }
-    if(!current_word){
-      return -1;
-    }
-    *retval = (int32_t)current_word;
-    return 0;
-  }
-  return -1;
-}
-
-uint8_t is_num(char char_to_check){
-  return ('0' <= char_to_check && '9' >= char_to_check);
-}*/
-
-/* USER FUNCTIONS END*/
 
 /** System Clock Configuration
 */
