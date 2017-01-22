@@ -9,21 +9,28 @@ struct word_description{
   void(*xt[1])();
 };
 
-
-
-extern void(*word_lit[1])(void);
   
-/* Public functions prototypes -----------------------------------------------*/
+#define LOOP_LENGTH 12
+
+/* Public variables definitions ----------------------------------------------*/
+/* USER CODE PV BEGIN */
+extern void(*word_lit_xt[1])(void);
 extern struct word_description *last_word;
+extern void(**interpretator_loop[LOOP_LENGTH])();
+extern void(***current_xt)(void);
 extern void(**current_word)(void);
-void lit(void);
+extern void (**next_xt_space)(void);
+/* USER CODE PV END */
+
+/* Public functions prototypes -----------------------------------------------*/
+/* USER CODE PF BEGIN */
 int32_t max(int32_t a, int32_t b);
 void creater_sudo();
+void interpretator_init(void);
 void lowercase(char *src);
-extern void (**next_xt_space)(void);
 uint8_t strcmp(char *first, char* second);
 void put(int32_t new_number);
 void strcpy(char *src, char* dest);
 uint16_t strlen(char *string);
-
+/* USER CODE PF END */
 #endif

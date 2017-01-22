@@ -48,7 +48,7 @@ int32_t *stack_data = STACK_DATA_BEGIN -1;
 uint32_t *stack_return = STACK_RETURN_BEGIN -1;
 uint32_t *stack_variables;
 
-char *buffer = (char*)(0x2002F000);
+char *buffer = STRING_BUFFER_BEGIN;
 uint8_t mode = 0;
 int32_t current_data;
 
@@ -66,6 +66,7 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void Error_Handler(void);
+void next(void);
 static void MX_GPIO_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ADC1_Init(void);
@@ -99,6 +100,14 @@ int main(void){
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
+  
+  //interpretator_init();
+  current_xt = interpretator_loop;
+  printf("%d\r\n",STRING_BUFFER_BEGIN);
+  next();
+  
+  
+  
   /* USER CODE END 2 */
   
   /* Infinite loop */
@@ -140,7 +149,7 @@ int main(void){
           }
           break;
         case 1:
-          *(next_xt_space++) = ((void(*)(void))word_lit);
+          *(next_xt_space++) = ((void(*)(void))word_lit_xt);
           *((int32_t *)(next_xt_space)) = current_data;
           ++next_xt_space;
           break;
@@ -154,6 +163,15 @@ int main(void){
 }
 
 /* USER FUNCTIONS BEGIN*/
+
+
+void next(void){
+  while(1){
+    (**current_xt)();
+    ++current_xt;
+  }
+}
+
 
 /**
 *@brief:        gets input word and trying to parse it
