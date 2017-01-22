@@ -101,9 +101,7 @@ int main(void){
 
   /* USER CODE BEGIN 2 */
   
-  //interpretator_init();
   current_xt = interpretator_loop;
-  printf("%d\r\n",STRING_BUFFER_BEGIN);
   next();
   
   
@@ -112,6 +110,7 @@ int main(void){
   
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /*
   while (1){
     scanf("%s", buffer);
     lowercase(buffer);
@@ -158,8 +157,10 @@ int main(void){
         break;
       }
     }
-  /* USER CODE END WHILE */
+  
   }
+  */
+  /* USER CODE END WHILE */
 }
 
 /* USER FUNCTIONS BEGIN*/
@@ -183,6 +184,8 @@ void next(void){
                 2 if this is a variable and we need to pop it's value
                 3 if this is a variable and we need to push it value
 */
+
+/*
 uint8_t input_parser(char *buffer, int32_t *retval){
   uint16_t len = strlen(buffer);
   if(('-' == *buffer && is_num(*(buffer+1))) || is_num(*buffer)){
@@ -222,7 +225,7 @@ uint8_t input_parser(char *buffer, int32_t *retval){
 
 uint8_t is_num(char char_to_check){
   return ('0' <= char_to_check && '9' >= char_to_check);
-}
+}*/
 
 /* USER FUNCTIONS END*/
 

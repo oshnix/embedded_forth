@@ -10,13 +10,13 @@ struct word_description{
 };
 
   
-#define LOOP_LENGTH 12
+#define LOOP_LENGTH 20
 
 /* Public variables definitions ----------------------------------------------*/
 /* USER CODE PV BEGIN */
-extern void(*word_lit_xt[1])(void);
 extern struct word_description *last_word;
 extern void(**interpretator_loop[LOOP_LENGTH])();
+extern void(**test_xt[5])();
 extern void(***current_xt)(void);
 extern void(**current_word)(void);
 extern void (**next_xt_space)(void);

@@ -15,18 +15,21 @@
 /* USER CODE BEGIN PFP */
 
 void docol(void);
-void word_end();
+void word_end(void);
 void read_word(void);
 void find_word(void);
 void lit(void);
 void exec(void);
+void is_num(void);
 /* USER CODE END PFP */
 
-/*Public variables -----------------------------------------------------------*/
-void(*word_lit_xt[1])(void) ={lit};
-void(*read_word_xt[1])(void) = {read_word};
-void(*find_word_xt[1])(void) = {find_word};
-void(*word_exec_xt[1])(void) = {exec};
+/* Private defines -----------------------------------------------------------*/
+#define READ_XT         (void(*[1])()){read_word}
+#define LIT_XT          (void(*[1])()){lit}
+#define FIND_XT         (void(*[1])()){find_word}
+#define EXEC_XT         (void(*[1])()){exec}
+#define IS_NUM_XT       (void(*[1])()){is_num}        
+
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 struct word_description *next_word_space = (struct word_description*)DATA_WORDS_BEGIN;
@@ -58,6 +61,10 @@ uint16_t strlen(char *string){
   uint16_t count = 0;
   while(*(string++)) ++count;
   return count;
+}
+
+uint8_t char_between(char current, char lower, char upper){
+  return (lower <= current && current <= upper);
 }
 
 void strcpy(char *src, char* dest){
@@ -104,6 +111,7 @@ void read_word(void){
 
 void exec(void){
   *(current_xt + 1) = (void(**)(void))*(stack_data--);
+  --stack_data;
 }
 
 void find_word(void){
@@ -123,6 +131,29 @@ void find_word(void){
     }
 }
 
+void is_num(void){
+  int32_t value = 0;
+  char* buf = (char*)(*stack_data);
+  if(('-' == *buf && char_between(*(buf+1), '0', '9')) || char_between(*buf, '0', '9')){
+    int8_t multiply = 1;
+    if('-' == *buf){
+      multiply = -1;
+      ++buf;
+    }
+    while(char_between(*buf, '0', '9')){
+      value = (value * 10) + ((*buf) - '0');
+      ++buf;
+    }
+    value *= multiply;
+    if(*buf){
+      *(++stack_data) = 0;
+    } else {
+      *(stack_data++) = value;
+      *(stack_data) = 1;
+    }
+  }
+}
+      
 /* USER CODE END WWDR*/
 
 /* Embedded Words ------------------------------------------------------------*/
@@ -309,28 +340,35 @@ struct word_description words[EMBEDDED_WORD_COUNT] = {
 };
 
 
+#define branch_xt words[16].xt
+#define branch0_xt words[17].xt
+#define drop_xt words[8].xt
+
+
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
-
-
 
 /*Initialize array with xt's for forth bootsrap loop -------------------------*/
 
  void(**interpretator_loop[LOOP_LENGTH])() = {
-    word_lit_xt,
+    LIT_XT,
     (void(**)())STRING_BUFFER_BEGIN,
-    read_word_xt,
-    find_word_xt,
-    words[17].xt,
+    READ_XT,
+    FIND_XT,
+    branch0_xt,
     (void(**)())4,
-    word_exec_xt,
+    EXEC_XT,
     (void(**)())0,
-    words[16].xt,
+    branch_xt,
     (void(**)())-10,
-    words[16].xt,
-    (void(**)())-12,
+    drop_xt,
+    IS_NUM_XT,
+    branch0_xt,
+    (void(**)())3,
+    drop_xt,
+    branch_xt,
+    (void(**)())-17,
+    drop_xt,
+    branch_xt,
+    (void(**)())-19,
   };
-/*
-void interpretator_init(void){
- 
-}*/
 /* USER CODE END 0 */
