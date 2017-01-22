@@ -105,6 +105,7 @@ int main(void){
   /* USER CODE BEGIN WHILE */
   while (1){
     scanf("%s", buffer);
+    lowercase(buffer);
     if(0 == mode){
       switch(input_parser(buffer, &current_data)){
       case 0:

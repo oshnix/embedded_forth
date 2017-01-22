@@ -58,7 +58,7 @@ extern int32_t current_data;
 #define USER_MEM_END                    ((int32_t*)0x2002FFFF)
 
 
-#define WORD_MAX_LEN                    5    
+#define WORD_MAX_LEN                    6    
 
 /* USER CODE END DEFINES */
 

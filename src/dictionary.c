@@ -215,12 +215,15 @@ void cond_jump(void){
 
 /*Not added in dictionary ----------------------------------------------------*/
 
-
+void less(void){
+  ++stack_data;
+  *stack_data = (*(stack_data - 2) < *(stack_data - 1));
+}
 
 /* USER CODE END EW*/ 
 
 /* Embeded words storage -----------------------------------------------------*/ 
-#define EMBEDDED_WORD_COUNT 18
+#define EMBEDDED_WORD_COUNT 19
 struct word_description words[EMBEDDED_WORD_COUNT] = {
   {0, "+", 0, add},
   {&words[0], "-", 0, sub},
@@ -240,6 +243,7 @@ struct word_description words[EMBEDDED_WORD_COUNT] = {
   {&words[14], "rot", 0, rotate},
   {&words[15], "br", 'r', jump},
   {&words[16], "br0", 'r', cond_jump},
+  {&words[17], "<", 0, less},
 };
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
 

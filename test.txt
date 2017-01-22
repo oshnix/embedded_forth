@@ -1,2 +1,6 @@
-: go br 1 + + ;
-1 2 3 4 .s go
+: >= < not ;
+: inc 1 + ;
+: sqrt 0 swap dup dup br0 12 drop swap drop swap inc dup dup
+* rot < br -14 drop drop drop ;
+
+16 sqrt .s
