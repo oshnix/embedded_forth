@@ -102,6 +102,7 @@ int main(void){
   /* USER CODE BEGIN 2 */
   
   current_xt = interpretator_loop;
+  mode = 0;
   next();
   
   

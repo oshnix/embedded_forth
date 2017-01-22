@@ -19,8 +19,11 @@ void word_end(void);
 void read_word(void);
 void find_word(void);
 void lit(void);
+void flag_check(void);
 void exec(void);
 void is_num(void);
+void cycle_init(void);
+void param_add(void);
 /* USER CODE END PFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -28,7 +31,10 @@ void is_num(void);
 #define LIT_XT          (void(*[1])()){lit}
 #define FIND_XT         (void(*[1])()){find_word}
 #define EXEC_XT         (void(*[1])()){exec}
-#define IS_NUM_XT       (void(*[1])()){is_num}        
+#define IS_NUM_XT       (void(*[1])()){is_num}
+#define CYCLE_INIT      (void(*[1])()){cycle_init}
+#define PARAM_ADD_XT    (void(*[1])()){param_add}
+#define FLAG_CHECK_XT   (void(*[1])()){flag_check}
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
@@ -94,13 +100,30 @@ int32_t max(int32_t a, int32_t b){
 /* USER CODE BEGIN WWDR*/
 
 void word_end(){
-  end_docol = 0;
+  current_xt = (void(***)())(*(stack_return--));
 }
 void lit(void){
     put((int32_t)(*(++current_xt)));
 }
 void put(int32_t new_number){
   *(++stack_data) = new_number;
+}
+
+void cycle_init(void){
+  *(++stack_data) = (int32_t)mode;
+  *(++stack_data) = (int32_t)STRING_BUFFER_BEGIN;
+}
+
+void flag_check(void){
+  ++stack_data;
+  *stack_data = (int32_t)*((char*)(*(stack_data-1)) - 1);
+  
+}
+
+void param_add(void){
+  *next_xt_space = (void(*)())(*(stack_data--));
+  --stack_data;
+  ++next_xt_space;
 }
 
 void read_word(void){
@@ -221,14 +244,7 @@ void print_all(void){
 
 void docol(void){
   *(++stack_return) = (uint32_t)current_xt;
-  current_xt = (void(***)(void))((current_word + 1));
-  while(end_docol){
-    current_word = *current_xt;
-    (*current_word)();
-    ++current_xt;
-  }
-  end_docol = 1;
-  current_xt = (void(***)(void))(*(stack_return--));
+  current_xt = (void(***)(void))(*current_xt);
 }
 
 void print_and_drop(){
@@ -307,9 +323,9 @@ void write(void){
 
 /*Not added in dictionary ----------------------------------------------------*/
 
-
-
 /* USER CODE END EW*/ 
+
+
 
 /* Embeded words storage -----------------------------------------------------*/ 
 #define EMBEDDED_WORD_COUNT 23
@@ -339,10 +355,11 @@ struct word_description words[EMBEDDED_WORD_COUNT] = {
   {&words[21], "read", 0, read_word},
 };
 
-
-#define branch_xt words[16].xt
-#define branch0_xt words[17].xt
-#define drop_xt words[8].xt
+#define MINUS_XT words[1].xt
+#define BRANCH_XT words[16].xt
+#define COND_BRANCH_XT words[17].xt
+#define DROP_XT words[8].xt
+#define ROT_XT words[15].xt
 
 
 struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
@@ -350,25 +367,61 @@ struct word_description *last_word = &(words[EMBEDDED_WORD_COUNT - 1]);
 /*Initialize array with xt's for forth bootsrap loop -------------------------*/
 
  void(**interpretator_loop[LOOP_LENGTH])() = {
-    LIT_XT,
-    (void(**)())STRING_BUFFER_BEGIN,
+    CYCLE_INIT,
     READ_XT,
+    ROT_XT,
+    /*if mode == 1, continue, else - goto interpretator*/
+    COND_BRANCH_XT,
+    (void(**)()) 28,
+      DROP_XT,
+      FIND_XT,
+      /*if input isn't word - goto, else - continue*/
+      COND_BRANCH_XT,
+      (void(**)())16,
+        FLAG_CHECK_XT,
+        LIT_XT,
+        (void(**)())'i',
+        MINUS_XT,
+        COND_BRANCH_XT,
+          (void(**)())4,
+        DROP_XT,
+        PARAM_ADD_XT,
+        BRANCH_XT,
+        (void(**)()) -19,
+      DROP_XT,
+      EXEC_XT,
+      (void(**)())0,
+      BRANCH_XT,
+      (void(**)()) -24,
+      /*input isn't word*/
+      IS_NUM_XT,
+      /*if not num - go to mistake output*/
+      COND_BRANCH_XT,
+      (void(**)()) 22,
+        LIT_XT,
+        LIT_XT,
+        PARAM_ADD_XT,
+        PARAM_ADD_XT,
+        BRANCH_XT,
+        (void(**)()) -33,
+    /*If mode == 0, we are in interpretator*/
+    DROP_XT,
     FIND_XT,
-    branch0_xt,
+    COND_BRANCH_XT,
     (void(**)())4,
-    EXEC_XT,
-    (void(**)())0,
-    branch_xt,
-    (void(**)())-10,
-    drop_xt,
+      EXEC_XT,
+      (void(**)())0,
+      BRANCH_XT,
+      (void(**)()) -41,
+    DROP_XT,
     IS_NUM_XT,
-    branch0_xt,
+    COND_BRANCH_XT,
     (void(**)())3,
-    drop_xt,
-    branch_xt,
-    (void(**)())-17,
-    drop_xt,
-    branch_xt,
-    (void(**)())-19,
+      DROP_XT,
+      BRANCH_XT,
+      (void(**)()) -48,
+    DROP_XT,
+    BRANCH_XT,
+    (void(**)()) -51,
   };
 /* USER CODE END 0 */

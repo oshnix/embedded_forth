@@ -10,7 +10,7 @@ struct word_description{
 };
 
   
-#define LOOP_LENGTH 20
+#define LOOP_LENGTH 51
 
 /* Public variables definitions ----------------------------------------------*/
 /* USER CODE PV BEGIN */
