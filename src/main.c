@@ -36,6 +36,7 @@
 /* USER CODE BEGIN Includes */
     
 #include "main.h"
+#include "core_cm4.h"
 #include "dictionary.h"
 
 /* USER CODE END Includes */
@@ -46,6 +47,7 @@
 int32_t *stack_data = STACK_DATA_BEGIN -1;
 uint32_t *stack_return = STACK_RETURN_BEGIN -1;
 uint8_t mode = 0;
+uint8_t error_code = 0;
 /*USER CODE END GV*/
 
 /* Private variables ---------------------------------------------------------*/
@@ -66,13 +68,9 @@ static void MX_ADC1_Init(void);
 /* USER CODE END 0 */
 
 int main(void){
-
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
+  
   /* MCU Configuration----------------------------------------------------------*/
-
+  
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
@@ -84,12 +82,21 @@ int main(void){
   MX_USB_OTG_FS_PCD_Init();
   MX_ADC1_Init();
 
-  /* USER CODE BEGIN 2 */
+  /* USER CODE BEGIN 1 */
   current_xt = interpretator_loop;
   mode = 0;
   next();
-  /* USER CODE END 2 */
+  /* USER CODE END 1 */
+   switch(error_code){
+   case 0:
+     break;
+     
+    default:
+      NVIC_SystemReset();
+      break;
+    }
   while(1){
+    /*put code for situation when forth ended it's work */
   }
 }
 
@@ -97,11 +104,29 @@ int main(void){
 
 
 void next(void){
-  while(1){
+  while(mode != 2){
     (**current_xt)();
+    /*OVERFLOW CHECK BEGIN*/
+    if(stack_data >= STACK_DATA_END){
+      error_code = 1;
+      printf("DATA STACK IS FULL\r\n");
+    } else if(stack_return >= STACK_RETURN_END) {
+      error_code = 2;
+      printf("RETURN STACK IS FULL\r\n");
+    } else if(next_xt_space >= DATA_WORDS_END){
+      error_code = 3;
+      printf("WORD SPACE IS FULL\r\n");
+    }
+    if(error_code){
+      printf("SYSTEM WILL BE REBOOTED\r\n");
+      mode = 2;
+    }
+    /*OVERFLOW CHECK END*/
     ++current_xt;
   }
 }
+
+/* USER FUNCTIONS END*/
 
 /** System Clock Configuration
 */

@@ -239,6 +239,10 @@ void add(void){
   *stack_data += *(stack_data + 1);
 }
 
+void end_work(void){
+  mode = 2;
+}
+
 void sub(void){
   --stack_data;
   *stack_data -= *(stack_data + 1);
@@ -345,7 +349,7 @@ void write(void){
 /* USER CODE END EW*/ 
 
 /* Embeded words storage -----------------------------------------------------*/ 
-#define EMBEDDED_WORD_COUNT 21
+#define EMBEDDED_WORD_COUNT 22
 struct colon_word words[EMBEDDED_WORD_COUNT] = {
   {0, "+", 0, add},
   {&words[0], "-", 0, sub},
@@ -368,6 +372,7 @@ struct colon_word words[EMBEDDED_WORD_COUNT] = {
   {&words[17], "<", 0, less},
   {&words[18], "mem", 0, mem},
   {&words[19], "@", 0, read},
+  {&words[20], "end", 0, end_work}
 };
 
 #define MINUS_XT        words[1].xt

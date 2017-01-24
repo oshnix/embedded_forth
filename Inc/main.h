@@ -18,37 +18,43 @@ extern uint8_t mode;
 **4 bytes - execution token adress
 *size - 24 KB total
 */
-#define DATA_WORDS_BEGIN                ((uint32_t*)0x2002A000)
-#define DATA_WORDS_END                  ((uint32_t*)0x2002FFFF)
+#define DATA_WORDS_BEGIN                ((void*)0x20028000)
+#define DATA_WORDS_END                  ((void*)0x2002DFE0)
 
 /*DATA STACK
 *stack - up to 1024 elements, 4B each
 *values - signed numbers of int32_t type
 *size - 4KB total.
 */
-#define STACK_DATA_BEGIN                ((int32_t*)0x20028000)
-#define STACK_DATA_END                  ((int32_t*)0x20028FFF)
+#define STACK_DATA_BEGIN                ((int32_t*)0x2002E000)
+#define STACK_DATA_END                  ((int32_t*)0x2002EFF0)
 
 /*RETURN STACK
 *return stack - the same as data stack
 *but consists of unsigned numbers.
 *size - 2KB total.
 */
-#define STACK_RETURN_BEGIN              ((uint32_t*)0x20029000)
-#define STACK_RETURN_END                ((uint32_t*)0x200297FF)
+#define STACK_RETURN_BEGIN              ((uint32_t*)0x2002F000)
+#define STACK_RETURN_END                ((uint32_t*)0x2002F7F0)
 
 /*STRING BUFFER
 *size 1KB total
 */
-#define STRING_BUFFER_BEGIN             ((char*)0x20029800)
-#define STRING_BUFFER_END               ((char*)0x20029BFF)
+#define STRING_BUFFER_BEGIN             ((char*)0x2002F800)
+#define STRING_BUFFER_END               ((char*)0x2002FBFF)
 
 /*USER MEM
 *size 1KB total
 */
-#define USER_MEM_BEGIN                  ((int32_t*)0x20029C00)
+#define USER_MEM_BEGIN                  ((int32_t*)0x2002FC00)
 #define USER_MEM_END                    ((int32_t*)0x2002FFFF)
 
+enum forth_error_codes{
+  ALL_OK = 0,
+  DATA_STACK_OVERFLOW = 1,
+  RETURN_STACK_OVERFLOW = 2,
+  WORDS_SPACE_OVERFLOW = 3
+};
 
 #define WORD_MAX_LEN                    6    
 
