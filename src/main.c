@@ -42,25 +42,15 @@
 
 
 /* Global variables ----------------------------------------------------------*/
-uint32_t *next_xt;
-uint32_t *w;
+/*USER CODE BEGIN GV*/
 int32_t *stack_data = STACK_DATA_BEGIN -1;
 uint32_t *stack_return = STACK_RETURN_BEGIN -1;
-uint32_t *stack_variables;
-
-char *buffer = STRING_BUFFER_BEGIN;
 uint8_t mode = 0;
-int32_t current_data;
+/*USER CODE END GV*/
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
-
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
-
-/* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE END PV */
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,11 +60,6 @@ void next(void);
 static void MX_GPIO_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ADC1_Init(void);
-
-/* USER CODE BEGIN PFP */
-uint8_t is_num(char char_to_check);
-uint8_t input_parser(char *buffer, int32_t *retval);
-/* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
 
@@ -100,11 +85,12 @@ int main(void){
   MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
-  
   current_xt = interpretator_loop;
   mode = 0;
   next();
   /* USER CODE END 2 */
+  while(1){
+  }
 }
 
 /* USER FUNCTIONS BEGIN*/
@@ -116,7 +102,6 @@ void next(void){
     ++current_xt;
   }
 }
-
 
 /** System Clock Configuration
 */
