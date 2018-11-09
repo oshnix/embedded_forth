@@ -48,6 +48,13 @@ ADC_HandleTypeDef hadc1;
 
 /* USER CODE END PV */
 
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+void Error_Handler(void);
+static void MX_GPIO_Init(void);
+static void MX_ADC1_Init(void);
+static void SystemClock_Config(void);
+
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
