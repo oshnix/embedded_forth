@@ -1,24 +1,17 @@
-#include "../include/memalloc.h"
-#include <malloc.h>
-
-#define KiloByte 0x100 /*0x100 * word = 1kB*/
-/*
-При реализации последующих функций вместо malloc будут использоваться абсолютные адреса ячеек памяти 
-*/
+#include "memalloc.h"
 
 word* stack_mem(){
-	return malloc(sizeof(word)*KiloByte);
-	/*При работе с памятью, все константы будут указаны в 16-ричной сс */
+	return malloc(sizeof(word)*KB);
 }
 
 word* dictionary_mem(){
-	return malloc(sizeof(word)*KiloByte*20);
+	return malloc(sizeof(word)*KB*20);
 }
 
 word* user_mem(){
-	return malloc(sizeof(word)*KiloByte);
+	return malloc(sizeof(word)*KB);
 }
 word* return_stack(){
-	return malloc(sizeof(word)*KiloByte);
+	return malloc(sizeof(word)*KB);
 }
 
